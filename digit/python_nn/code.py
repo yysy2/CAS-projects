@@ -40,18 +40,28 @@ def nncostfunction(ltheta1, ltheta2, linput_layer_size, lhidden_layer_size, lnum
 	theta1_grad = np.zeros((np.shape(ltheta1)))
 	theta2_grad = np.zeros((np.shape(ltheta2)))
 	y_matrix = []
+	m = len(lx[:,1])
 
 	eye_matrix = np.eye(lnum_labels)
 	for i in range(len(y)):
 		y_matrix.append(eye_matrix[int(y[i]),:])
+	y_matrix = np.array(y_matrix)
 
-	#print(np.shape(np.ones((m, 1))))
 	a1 = (np.concatenate((np.ones((m, 1)), x), axis=1)).astype(float)
 	z2 = sigmoid(ltheta1.dot(a1.T))
 	a2 = (np.concatenate((np.ones((len(z2[1,:]), 1)), z2.T), axis=1)).astype(float)
 	a3 = sigmoid(ltheta2.dot(a2.T))
 	h = a3
-	print(np.shape(h))
+
+	J_unreg = 0
+	J = 0
+	J_unreg = (1/m)*sum(sum(-y_matrix*np.log(h.T)-(1-y_matrix)*np.log(1-h.T)))
+	J = J_unreg + (llambda_reg/(2*m))*(sum(sum(ltheta1[:,2:]*ltheta1[:,2:]))+sum(sum(ltheta2[:,2:]*ltheta2[:,2:])))
+	delta3 = a3.T - y_matrix
+	delta2 = (delta3.dot(ltheta2[:,2:]))*(sigmoidgradient(ltheta1.dot(a1.T))).T
+	print(delta2)
+	print(np.shape(delta2))
+	exit()
 	
 #-----------------END FUNCTION 4-----------------
 
