@@ -20,6 +20,22 @@ def randinitialize(L_in, L_out):
 
 
 #-----------------BEGIN FUNCTION 2-----------------
+def sigmoid(lz):
+	g = 1.0/(1.0 + np.exp(-lz))
+
+	return g
+#-----------------END FUNCTION 2-----------------
+
+
+#-----------------BEGIN FUNCTION 3-----------------
+def sigmoidgradient(lz):
+	g = sigmoid(lz)*(1-sigmoid(lz))
+
+	return g
+#-----------------END FUNCTION 4-----------------
+
+
+#-----------------BEGIN FUNCTION 4-----------------
 def nncostfunction(ltheta1, ltheta2, linput_layer_size, lhidden_layer_size, lnum_labels, lx, ly, llambda_reg):
 	theta1_grad = np.zeros((np.shape(ltheta1)))
 	theta2_grad = np.zeros((np.shape(ltheta2)))
@@ -28,10 +44,16 @@ def nncostfunction(ltheta1, ltheta2, linput_layer_size, lhidden_layer_size, lnum
 	eye_matrix = np.eye(lnum_labels)
 	for i in range(len(y)):
 		y_matrix.append(eye_matrix[int(y[i]),:])
-	print(np.shape(y_matrix))
-	exit()
 
-#-----------------END FUNCTION 2-----------------
+	#print(np.shape(np.ones((m, 1))))
+	a1 = (np.concatenate((np.ones((m, 1)), x), axis=1)).astype(float)
+	z2 = sigmoid(ltheta1.dot(a1.T))
+	a2 = (np.concatenate((np.ones((len(z2[1,:]), 1)), z2.T), axis=1)).astype(float)
+	a3 = sigmoid(ltheta2.dot(a2.T))
+	h = a3
+	print(np.shape(h))
+	
+#-----------------END FUNCTION 4-----------------
 
 
 #-----------------BEGIN BODY-----------------
