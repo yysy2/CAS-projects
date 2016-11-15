@@ -7,6 +7,7 @@ from scipy import stats
 import sys
 import csv
 import scipy
+np.set_printoptions(threshold=np.nan)
 #-----------------END HEADERS-----------------
 
 
@@ -50,39 +51,64 @@ def nncostfunction(ltheta_ravel, linput_layer_size, lhidden_layer_size, lnum_lab
 		y_matrix.append(eye_matrix[int(y[i]),:])
 	y_matrix = np.array(y_matrix)
 
+	#print(y_matrix[0:4])
+	#print(np.shape(y_matrix))
+	#print(np.shape(x))
+	#exit()
+
 	a1 = (np.concatenate((np.ones((m, 1)), x), axis=1)).astype(float)
 	z2 = sigmoid(ltheta1.dot(a1.T))
 	a2 = (np.concatenate((np.ones((np.shape(z2)[1], 1)), z2.T), axis=1)).astype(float)
 	a3 = sigmoid(ltheta2.dot(a2.T))
 	h = a3
 
+	#print(h[:,0])
+	#print(np.shape(h))
+	#exit()
+
 	J_unreg = 0
 	J = 0
-	J_unreg = (1/m)*np.sum(\
+	J_unreg = (1/float(m))*np.sum(\
 	-np.multiply(y_matrix,np.log(h.T))\
 	-np.multiply((1-y_matrix),np.log(1-h.T))\
 	,axis=None)
-	J = J_unreg + (llambda_reg/(2*m))*\
+
+	#print(-np.multiply(y_matrix,np.log(h.T))-np.multiply((1-y_matrix),np.log(1-h.T)))
+	#print(np.sum(\
+  #-np.multiply(y_matrix,np.log(h.T))\
+  #-np.multiply((1-y_matrix),np.log(1-h.T))\
+  #,axis=None))
+	#print(np.multiply((1-y_matrix),np.log(1-h.T)))
+	#exit()
+	#print(J)
+	#print(np.shape(J_unreg))
+	#exit()
+
+	J = J_unreg + (llambda_reg/(2*float(m)))*\
 	(np.sum(\
 	np.multiply(ltheta1[:,1:],ltheta1[:,1:])\
 	,axis=None)+np.sum(\
 	np.multiply(ltheta2[:,1:],ltheta2[:,1:])\
 	,axis=None))
 
+	#print(J)
+	#print(np.shape(J))
+	#exit()
+
 	delta3 = a3.T - y_matrix
 	delta2 = np.multiply((delta3.dot(ltheta2[:,1:])), (sigmoidgradient(ltheta1.dot(a1.T))).T)
 	cdelta2 = ((a2.T).dot(delta3)).T
 	cdelta1 = ((a1.T).dot(delta2)).T
 
-	theta1_grad = (1/m)*cdelta1
-	theta2_grad = (1/m)*cdelta2
+	theta1_grad = (1/float(m))*cdelta1
+	theta2_grad = (1/float(m))*cdelta2
 
 	theta1_hold = ltheta1
 	theta2_hold = ltheta2
 	theta1_hold[:,0] = 0;
 	theta2_hold[:,0] = 0;
-	theta1_grad = theta1_grad + (llambda_reg/m)*theta1_hold;
-	theta2_grad = theta2_grad + (llambda_reg/m)*theta2_hold;
+	theta1_grad = theta1_grad + (llambda_reg/float(m))*theta1_hold;
+	theta2_grad = theta2_grad + (llambda_reg/float(m))*theta2_hold;
 
 	thetagrad_ravel = np.concatenate((np.ravel(theta1_grad), np.ravel(theta2_grad)))
 	#ltheta1_grad = np.matrix(np.reshape(thetagrad_ravel[:lhidden_layer_size * (linput_layer_size + 1)], (lhidden_layer_size, (linput_layer_size + 1))))
@@ -99,15 +125,24 @@ def nncostfunction(ltheta_ravel, linput_layer_size, lhidden_layer_size, lnum_lab
 
 #-----------------BEGIN FUNCTION 5-----------------
 def predict(ltheta1, ltheta2, x, m, num_labels):
-	p = np.zeros((np.shape(x)[1], 1))
-	h1 = sigmoid((np.concatenate((np.ones((m,1)),x),axis=1)).astype(float).dot((ltheta1.T).astype(float)))
-	h2 = sigmoid((np.concatenate((np.ones((m,1)),h1),axis=1)).astype(float).dot((ltheta2.T).astype(float)))
-	print(np.shape(h2))
-	exit()
-	#h1 = sigmoid([ones(m, 1) X] * Theta1')
-	#h2 = sigmoid([ones(m, 1) h1] * Theta2')
-	#[dummy, p] = max(h2, [], 2);
+	p = np.zeros(np.shape(x)[0])
+	#p_val = np.zeros(np.shape(x)[0])
+	h1 = sigmoid(((np.concatenate((np.ones((m,1)),x),axis=1)).astype(float)).dot((ltheta1.T).astype(float)))
+	h2 = sigmoid(((np.concatenate((np.ones((m,1)),h1),axis=1)).astype(float)).dot((ltheta2.T).astype(float)))
+	#print(h2)
+	#print(np.shape(h2))
+	#exit()
+	#print(h2[10000,:])
+	#print(np.argmax(h2[10000,:]))
+	#exit()
+	for i in range(0,np.shape(h2)[0]):
+		#p[i], p_val[i] = max(enumerate(h2[i,:]), key=operator.itemgetter(1))
+		p[i] = np.argmax(h2[i,:])
 
+	#print(p)
+	#exit()
+	
+	return p
 #-----------------END FUNCTION 5-----------------
 
 
@@ -116,7 +151,7 @@ print("Started running")
 
 ## Setup the parameters you will use for this exercise
 input_layer_size  = 784;  # 28x28 Input Images of Digits
-hidden_layer_size = 25;   # 25 hidden units
+hidden_layer_size = 100;   # 25 hidden units
 num_labels = 10;          # 10 labels, from 0 to 9
 data = []
 
@@ -134,7 +169,7 @@ with open('train.csv', 'rb') as csvfile:
 data_sort = np.sort(data,axis=0)
 del(data)
 x = data_sort[:,1:]
-y = data_sort[:,1]
+y = data_sort[:,0]
 
 #Set basic parameters
 m, n = np.shape(x)
@@ -161,10 +196,23 @@ theta_initial_ravel = np.concatenate((np.ravel(theta1_initial), np.ravel(theta2_
 print('Doing fminunc')
 #Doing fminunc (Training)
 #nncostfunction(nn_params_initial, input_layer_size, hidden_layer_size, num_labels, x, y, lambda_reg);
-fmin = scipy.optimize.minimize(fun=nncostfunction, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size, num_labels, x, y, lambda_reg), method='TNC', jac=True, options={'maxiter': 10})
+#fmin = scipy.optimize.minimize(fun=nncostfunction, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size, num_labels, x, y, lambda_reg), method='TNC', jac=True, options={'maxiter': 100})
+fmin = scipy.optimize.minimize(fun=nncostfunction, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size, num_labels, x, y, lambda_reg), method='L-BFGS-B', jac=True, options={'maxiter': 100})
 fmin
 theta1 = np.matrix(np.reshape(fmin.x[:hidden_layer_size * (input_layer_size + 1)], (hidden_layer_size, (input_layer_size + 1))))
 theta2 = np.matrix(np.reshape(fmin.x[hidden_layer_size * (input_layer_size + 1):], (num_labels, (hidden_layer_size + 1))))
+#theta1 = theta1_initial
+#theta2 = theta2_initial
 
-predict(theta1, theta2, x, m, num_labels);
+#print(theta2)
+#print(np.shape(theta2))
+#exit()
+
+p = predict(theta1, theta2, x, m, num_labels);
+#print(p[::100])
+#print(y[::100])
+#print(y)
+correct = [1 if a == b else 0 for (a, b) in zip(p.astype(int), y.astype(int))]  
+accuracy = (sum(map(int, correct)) / float(len(correct)))  
+print 'accuracy = {0}%'.format(accuracy * 100)
 #-----------------END BODY-----------------
