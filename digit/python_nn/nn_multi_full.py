@@ -588,10 +588,10 @@ def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, 
         del(theta2_initial)
         del(theta3_initial)
         del(theta_initial_ravel)
-      hidden_layer_size1 = int(hidden_layer_size1*3.0)
+      hidden_layer_size2 = int(hidden_layer_size2*3.0)
       lambda_reg = lambda_reg_lower_threshold
-    hidden_layer_size2 = int(hidden_layer_size2*3.0)
-    hidden_layer_size1 = d1_reg_lower_threshold
+    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size2 = d2_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
 
   a = np.argmax(list_of_predicted)
@@ -656,14 +656,14 @@ def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, 
           del(theta3_initial)
           del(theta4_initial)
           del(theta_initial_ravel)
-        hidden_layer_size1 = int(hidden_layer_size1*3.0)
+        hidden_layer_size3 = int(hidden_layer_size3*3.0)
         lambda_reg = lambda_reg_lower_threshold
       hidden_layer_size2 = int(hidden_layer_size2*3.0)
-      hidden_layer_size1 = d1_reg_lower_threshold
+      hidden_layer_size3 = d3_reg_lower_threshold
       lambda_reg = lambda_reg_lower_threshold
-    hidden_layer_size3 = int(hidden_layer_size3*3.0)
-    hidden_layer_size2 = d1_reg_lower_threshold
-    hidden_layer_size1 = d1_reg_lower_threshold
+    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size2 = d2_reg_lower_threshold
+    hidden_layer_size3 = d3_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
 
   a = np.argmax(list_of_predicted)
@@ -703,9 +703,9 @@ use_minimisation_display = True     # Sets whether we display iterations
 ##Optimisation options
 allow_optimisation = True          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
 only_optimisation = True           # If True, will exit after optimisation, only works if allow_optimisation = True
-optimisation_iteration = 10         # Sets how many iterations when doing optimisation
+optimisation_iteration = 2         # Sets how many iterations when doing optimisation
 lambda_reg_lower_threshold = 0.5    # Sets the min lambda threshold for optimisation
-lambda_reg_upper_threshold = 10.0  # Sets the max lambda threshold for optimisation
+lambda_reg_upper_threshold = 5.0  # Sets the max lambda threshold for optimisation
 d1_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
 d1_reg_upper_threshold = 80       # Sets the max d1 threshold for optimisation
 d2_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
@@ -745,7 +745,7 @@ if allow_optimisation == True:
     print("Must set use_random_initialisation = True for this to work")
   else:
     print('Doing optimisation')
-		if number_of_layers == 3:
+    if number_of_layers == 3:
       del(hidden_layer_size1)
       del(lambda_reg)
       hidden_layer_size1, lambda_reg = myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold);
