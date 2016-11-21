@@ -1,5 +1,6 @@
 import numpy as np
 import logistics as lg
+
 def nnCostFunction_vectorized(nn_params, input_layer_size, hidden_layer_size, num_labels, X, y, lamb):
    # cost function for a two-layer neural network (input, hidden, output)
    # nn_params is a vector of unrolled parameters for the neural network-> to be converted back into weight matrices
@@ -28,17 +29,15 @@ def nnCostFunction_vectorized(nn_params, input_layer_size, hidden_layer_size, nu
    y_matrix = []
    eye_matrix = np.eye(num_labels)
    for i in range(len(y)):
-       y_matrix.append(eye_matrix[int(y[i])-1,:])
+       y_matrix.append(eye_matrix[int(y[i]),:])
    y_matrix = np.array(y_matrix)
    J = np.sum(-np.multiply(y_matrix,np.log(htheta)) - np.multiply((1-y_matrix),np.log(1-htheta)),axis=None)
-   J = J/(float(m))
-   J = J + lamb*(np.sum(Theta1[:,1:]**2,axis=None, dtype=np.float64) + np.sum(Theta2[:,1:]**2,axis=None, dtype=np.float64))/(2*float(m))
+   J = J + lamb*(np.sum(Theta1[:,1:]**2,axis=None, dtype=np.float64) + np.sum(Theta2[:,1:]**2,axis=None, dtype=np.float64))/2.0
+   J = J/float(m)
    delta3 = htheta - y_matrix
-   delta2 = np.multiply((delta3.dot(Theta2[:,1:])), (lg.sigmoidGradient(Theta1.dot(X.T))).T)
-   cdelta2 = ((a2.T).dot(delta3)).T
-   cdelta1 = ((X.T).dot(delta2)).T
-   Theta1_grad = cdelta1
-   Theta2_grad = cdelta2
+   delta2 = (delta3.dot(Theta2[:,1:]))*lg.sigmoidGradient(z2[:,:].T)
+   Theta2_grad = ((a2.T).dot(delta3)).T
+   Theta1_grad = ((X.T).dot(delta2)).T
    Theta1_grad[:,1:] = Theta1_grad[:,1:] + lamb*Theta1[:,1:]
    Theta2_grad[:,1:] = Theta2_grad[:,1:] + lamb*Theta2[:,1:]
    Theta1_grad = Theta1_grad/float(m)
