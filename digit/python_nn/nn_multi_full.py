@@ -492,7 +492,7 @@ def readintestcsv():
 
 
 #-----------------BEGIN FUNCTION 10-----------------
-def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold):
+def myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -520,7 +520,7 @@ def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, 
       list_of_lambda_reg.append(lambda_reg)
       list_of_predicted.append(accuracy_cv)
 
-      lambda_reg = lambda_reg*3.0
+      lambda_reg = lambda_reg*optimisation_jump
       del(p_op)
       del(correct_cv)
       del(accuracy_cv)
@@ -531,7 +531,7 @@ def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, 
       del(theta1_initial)
       del(theta2_initial)
       del(theta_initial_ravel)
-    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size1 = int(hidden_layer_size1*optimisation_jump)
     lambda_reg = lambda_reg_lower_threshold
 
   a = np.argmax(list_of_predicted)
@@ -541,7 +541,7 @@ def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, 
 
 
 #-----------------BEGIN FUNCTION 10b-----------------
-def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold):
+def myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -575,7 +575,7 @@ def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, 
         list_of_lambda_reg.append(lambda_reg)
         list_of_predicted.append(accuracy_cv)
 
-        lambda_reg = lambda_reg*3.0
+        lambda_reg = lambda_reg*optimisation_jump
         del(p_op)
         del(correct_cv)
         del(accuracy_cv)
@@ -588,9 +588,9 @@ def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, 
         del(theta2_initial)
         del(theta3_initial)
         del(theta_initial_ravel)
-      hidden_layer_size2 = int(hidden_layer_size2*3.0)
+      hidden_layer_size2 = int(hidden_layer_size2*optimisation_jump)
       lambda_reg = lambda_reg_lower_threshold
-    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size1 = int(hidden_layer_size1*optimisation_jump)
     hidden_layer_size2 = d2_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
 
@@ -601,7 +601,7 @@ def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, 
 
 
 #-----------------BEGIN FUNCTION 10c-----------------
-def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold):
+def myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -641,7 +641,7 @@ def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, 
           list_of_lambda_reg.append(lambda_reg)
           list_of_predicted.append(accuracy_cv)
 
-          lambda_reg = lambda_reg*3.0
+          lambda_reg = lambda_reg*optimisation_jump
           del(p_op)
           del(correct_cv)
           del(accuracy_cv)
@@ -656,12 +656,12 @@ def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, 
           del(theta3_initial)
           del(theta4_initial)
           del(theta_initial_ravel)
-        hidden_layer_size3 = int(hidden_layer_size3*3.0)
+        hidden_layer_size3 = int(hidden_layer_size3*optimisation_jump)
         lambda_reg = lambda_reg_lower_threshold
-      hidden_layer_size2 = int(hidden_layer_size2*3.0)
+      hidden_layer_size2 = int(hidden_layer_size2*optimisation_jump)
       hidden_layer_size3 = d3_reg_lower_threshold
       lambda_reg = lambda_reg_lower_threshold
-    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size1 = int(hidden_layer_size1*optimisation_jump)
     hidden_layer_size2 = d2_reg_lower_threshold
     hidden_layer_size3 = d3_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
@@ -683,7 +683,7 @@ hidden_layer_size1 = 25             # hidden units, unless allow_optimisation = 
 hidden_layer_size2 = 25            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3
 hidden_layer_size3 = 25            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3 or 4
 num_labels = 10                     # 10 labels, from 0 to 9
-number_of_layers = 4                # Gives the number of layers in nn. 3, 4, 5 are available.
+number_of_layers = 3                # Gives the number of layers in nn. 3, 4, 5 are available.
 lambda_reg = 1.0                    # Regularisation parameter, allow_optimisation = True
 ratio_training_to_cv = 0.7          # Sets the ratio of training to cv data
 use_all_training_data = False       # If True, will use all training data instead of spliting into train and CV
@@ -692,26 +692,27 @@ use_all_training_data = False       # If True, will use all training data instea
 use_random_initialisation = True    # If true, it will use random initialisation, if false, will use preset random values (FOR DEBUGGING ONLY) -- ONLY WORKS IF ALLOW_OPTIMISER = FALSE AND HIDDEN LAYER = 25 AND LAYERS = 3
 
 ##Gradient checking
-use_gradient_checking = True        # If true, will turn on gradient checking (FOR DEBUGGING/FIRST RUN ONLY)
+use_gradient_checking = False        # If true, will turn on gradient checking (FOR DEBUGGING/FIRST RUN ONLY)
 only_gradient_checking = False      # If true, will exit after gradient checking
 
 ##Minimiser options
-iteration_number = 10               # Number of iterations
+iteration_number = 3000               # Number of iterations
 minimisation_method = "L-BFGS-B"    # Sets minimiser method, recommended L-BFGS-B or TNC
 use_minimisation_display = True     # Sets whether we display iterations
 
 ##Optimisation options
 allow_optimisation = True          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
-only_optimisation = True           # If True, will exit after optimisation, only works if allow_optimisation = True
-optimisation_iteration = 2         # Sets how many iterations when doing optimisation
+only_optimisation = False           # If True, will exit after optimisation, only works if allow_optimisation = True
+optimisation_iteration = 300         # Sets how many iterations when doing optimisation
+optimisation_jump = 2.0             # Sets how multiplier
 lambda_reg_lower_threshold = 0.5    # Sets the min lambda threshold for optimisation
-lambda_reg_upper_threshold = 5.0  # Sets the max lambda threshold for optimisation
+lambda_reg_upper_threshold = 400.0  # Sets the max lambda threshold for optimisation
 d1_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
-d1_reg_upper_threshold = 80       # Sets the max d1 threshold for optimisation
+d1_reg_upper_threshold = 2500       # Sets the max d1 threshold for optimisation
 d2_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
-d2_reg_upper_threshold = 80       # Sets the max d1 threshold for optimisation
+d2_reg_upper_threshold = 2500       # Sets the max d1 threshold for optimisation
 d3_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
-d3_reg_upper_threshold = 80       # Sets the max d1 threshold for optimisation
+d3_reg_upper_threshold = 2500       # Sets the max d1 threshold for optimisation
 
 ##Output CSV file options
 output_test_submission = False      # If True, will print out test data for submission
@@ -748,17 +749,17 @@ if allow_optimisation == True:
     if number_of_layers == 3:
       del(hidden_layer_size1)
       del(lambda_reg)
-      hidden_layer_size1, lambda_reg = myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold);
+      hidden_layer_size1, lambda_reg = myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold);
     elif number_of_layers == 4:
       del(hidden_layer_size1)
       del(hidden_layer_size2)
       del(lambda_reg)
-      hidden_layer_size1, hidden_layer_size2, lambda_reg = myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold);
+      hidden_layer_size1, hidden_layer_size2, lambda_reg = myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold);
     elif number_of_layers == 5:
       del(hidden_layer_size1)
       del(hidden_layer_size2)
       del(lambda_reg)
-      hidden_layer_size1, hidden_layer_size2, hidden_layer_size2, lambda_reg = myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold);
+      hidden_layer_size1, hidden_layer_size2, hidden_layer_size2, lambda_reg = myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold);
     else:
       print("Number of layers must be 3, 4 or 5!!! :(")
 
@@ -904,5 +905,14 @@ if output_test_submission == True:
     imageid.append(i+1)
   mysubmission = np.vstack((imageid,p_test))
   np.set_printoptions(suppress=True)
-  np.savetxt("mytest.csv", mysubmission.T, delimiter=",", fmt='%.0f')
+  np.savetxt("mytest_3layers.csv", mysubmission.T, delimiter=",", fmt='%.0f')
+
+  if number_of_layers == 3:
+    print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", lambda: " + str(lambda_reg))
+  elif number_of_layers == 4:
+    print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", " + str(hidden_layer_size2) + ", lambda: " + str(lambda_reg))
+  elif number_of_layers == 5:
+    print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", " + str(hidden_layer_size2) + ", " + str(hidden_layer_size3) + ", lambda: " + str(lambda_reg))
+  else:
+    print("Number of layers must be 3, 4 or 5")
 #-----------------END BODY-----------------
