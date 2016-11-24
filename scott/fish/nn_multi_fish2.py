@@ -35,7 +35,7 @@ number_of_layers = 3                # Gives the number of layers in nn. 3, 4, 5 
 lambda_reg = 1.0                    # Regularisation parameter, allow_optimisation = True
 ratio_training_to_cv = 0.7          # Sets the ratio of training to cv data
 use_all_training_data = False       # If True, will use all training data instead of spliting into train and CV
-colour = True                      # Select if we use RGB or greyscale
+colour = False                      # Select if we use RGB or greyscale
 
 ##Initialisation
 use_random_initialisation = True    # If true, it will use random initialisation, if false, will use preset random values (FOR DEBUGGING ONLY) -- ONLY WORKS IF ALLOW_OPTIMISER = FALSE AND HIDDEN LAYER = 25 AND LAYERS = 3
@@ -45,17 +45,17 @@ use_gradient_checking = False        # If true, will turn on gradient checking (
 only_gradient_checking = False      # If true, will exit after gradient checking
 
 ##Minimiser options
-iteration_number = 300               # Number of iterations
+iteration_number = 100               # Number of iterations
 minimisation_method = "L-BFGS-B"    # Sets minimiser method, recommended L-BFGS-B or TNC
 use_minimisation_display = True     # Sets whether we display iterations
 
 ##Optimisation options
-allow_optimisation = False          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
-only_optimisation = False           # If True, will exit after optimisation, only works if allow_optimisation = True
+allow_optimisation = True          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
+only_optimisation = True           # If True, will exit after optimisation, only works if allow_optimisation = True
 optimisation_iteration = 100         # Sets how many iterations when doing optimisation
 optimisation_jump = 4.0             # Sets how multiplier
-lambda_reg_lower_threshold = 5.0    # Sets the min lambda threshold for optimisation
-lambda_reg_upper_threshold = 350.0  # Sets the max lambda threshold for optimisation
+lambda_reg_lower_threshold = 1.0    #1.0   #5.0    # Sets the min lambda threshold for optimisation
+lambda_reg_upper_threshold = 300.0  #300.0   #350.0  # Sets the max lambda threshold for optimisation
 d1_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
 d1_reg_upper_threshold = 2700       # Sets the max d1 threshold for optimisation
 d2_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
