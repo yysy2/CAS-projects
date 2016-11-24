@@ -105,10 +105,10 @@ def nncostfunction3(ltheta_ravel, linput_layer_size, lhidden_layer_size, lnum_la
   J = 0
   if 0 in (h):
     #print("Yes 0")
-    h[h==0] = 1e-6
+    h[h==0] = 1e-15
   if 1 in (h):
     #print("Yes 1")
-    h[h==1] = 1 - 1e-6
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -168,10 +168,10 @@ def nncostfunction4(ltheta_ravel, linput_layer_size, lhidden_layer_size1, lhidde
   J = 0
   if 0 in (h):
     #print("Yes 0")
-    h[h==0] = 1e-6
+    h[h==0] = 1e-15
   if 1 in (h):
     #print("Yes 1")
-    h[h==1] = 1 - 1e-6
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -244,10 +244,10 @@ def nncostfunction5(ltheta_ravel, linput_layer_size, lhidden_layer_size1, lhidde
   J = 0
   if 0 in (h):
     #print("Yes 0")
-    h[h==0] = 1e-6
+    h[h==0] = 1e-15
   if 1 in (h):
     #print("Yes 1")
-    h[h==1] = 1 - 1e-6
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\

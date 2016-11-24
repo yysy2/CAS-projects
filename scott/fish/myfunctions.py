@@ -28,21 +28,21 @@ def readincsv(ratio_training_to_cv, colour):
   #Sort the data by num_labels, split into X and y
   print('Reading in data')
   if colour == True:
-    with open('train_c_40_22.csv', 'rb') as csvfile:
-      has_header = csv.Sniffer().has_header(csvfile.read(1024))
-      csvfile.seek(0)  # rewind
+    with open('train_c_20_12.csv', 'rb') as csvfile:
+      #has_header = csv.Sniffer().has_header(csvfile.read(1024))
+      #csvfile.seek(0)  # rewind
       data_csv = csv.reader(csvfile, delimiter=',')
-      if has_header:
-        next(data_csv)
+      #if has_header:
+      #  next(data_csv)
       for row in data_csv:
         data.append(row)
   else:
-    with open('train_l_40_22.csv', 'rb') as csvfile:
-      has_header = csv.Sniffer().has_header(csvfile.read(1024))
-      csvfile.seek(0)  # rewind
+    with open('train_l_20_12.csv', 'rb') as csvfile:
+      #has_header = csv.Sniffer().has_header(csvfile.read(1024))
+      #csvfile.seek(0)  # rewind
       data_csv = csv.reader(csvfile, delimiter=',')
-      if has_header:
-        next(data_csv)
+      #if has_header:
+      #  next(data_csv)
       for row in data_csv:
         data.append(row)
   data = np.array(data)
@@ -120,10 +120,10 @@ def nncostfunction3(ltheta_ravel, linput_layer_size, lhidden_layer_size, lnum_la
   J = 0
   if 0 in (h):
     #print("Yes 0")
-    h[h==0] = 1e-6
+    h[h==0] = 1e-15
   if 1 in (h):
     #print("Yes 1")
-    h[h==1] = 1 - 1e-6
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -183,10 +183,10 @@ def nncostfunction4(ltheta_ravel, linput_layer_size, lhidden_layer_size1, lhidde
   J = 0
   if 0 in (h):
     #print("Yes 0")
-    h[h==0] = 1e-6
+    h[h==0] = 1e-15
   if 1 in (h):
     #print("Yes 1")
-    h[h==1] = 1 - 1e-6
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -259,10 +259,10 @@ def nncostfunction5(ltheta_ravel, linput_layer_size, lhidden_layer_size1, lhidde
   J = 0
   if 0 in (h):
     #print("Yes 0")
-    h[h==0] = 1e-6
+    h[h==0] = 1e-15
   if 1 in (h):
     #print("Yes 1")
-    h[h==1] = 1 - 1e-6
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -508,12 +508,12 @@ def readintestcsv(colour):
 
   x_test = []
   if colour == True:
-    with open('test_c_40_22.csv', 'rb') as csvfile2:
+    with open('test_c_20_12.csv', 'rb') as csvfile2:
       data_csv2 = csv.reader(csvfile2, delimiter=',')
       for row in data_csv2:
         x_test.append(row)
   else:
-    with open('test_l_40_22.csv', 'rb') as csvfile2:
+    with open('test_l_20_12.csv', 'rb') as csvfile2:
       data_csv2 = csv.reader(csvfile2, delimiter=',')
       for row in data_csv2:
         x_test.append(row)
@@ -527,7 +527,7 @@ def readintestcsv(colour):
 
 
 #-----------------BEGIN FUNCTION 10-----------------
-def myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold):
+def myoptimiser3(use_logloss, optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -535,6 +535,7 @@ def myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, nu
   list_of_hidden_layer_size1 = []
   list_of_lambda_reg = []
   list_of_predicted = []
+  list_of_logloss = []
 
   while hidden_layer_size1 < d1_reg_upper_threshold:
     while lambda_reg < lambda_reg_upper_threshold:
@@ -551,15 +552,21 @@ def myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, nu
       correct_cv = [1 if a == b else 0 for (a, b) in zip(p_op,y_cv)]
       accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
 
+      llogloss = mylogloss(h_op, y_cv, num_labels);
+
       list_of_hidden_layer_size1.append(hidden_layer_size1)
       list_of_lambda_reg.append(lambda_reg)
       list_of_predicted.append(accuracy_cv)
+      list_of_logloss.append(llogloss)
       print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
+      print("Mylogloss is: " + str(llogloss))
 
       lambda_reg = lambda_reg*optimisation_jump
       del(p_op)
       del(correct_cv)
       del(accuracy_cv)
+      del(h_op)
+      del(llogloss)
       del(fmin)
       del(answer)
       del(theta1)
@@ -570,14 +577,17 @@ def myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, nu
     hidden_layer_size1 = int(hidden_layer_size1*optimisation_jump)
     lambda_reg = lambda_reg_lower_threshold
 
-  a = np.argmax(list_of_predicted)
+  if use_logloss == True:
+    a = np.argmin(list_of_logloss)
+  else:
+    a = np.argmax(list_of_predicted)
 
   return(list_of_hidden_layer_size1[a], list_of_lambda_reg[a]) 
 #-----------------END FUNCTION 10-----------------
 
 
 #-----------------BEGIN FUNCTION 10b-----------------
-def myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold):
+def myoptimiser4(use_logloss, optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -587,6 +597,7 @@ def myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, nu
   list_of_hidden_layer_size2 = []
   list_of_lambda_reg = []
   list_of_predicted = []
+  list_of_logloss = []
 
   while hidden_layer_size1 < d1_reg_upper_threshold:
     while hidden_layer_size2 < d2_reg_upper_threshold:
@@ -606,16 +617,22 @@ def myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, nu
         correct_cv = [1 if a == b else 0 for (a, b) in zip(p_op,y_cv)]
         accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
 
+        llogloss = mylogloss(h_op, y_cv, num_labels);
+
         list_of_hidden_layer_size1.append(hidden_layer_size1)
         list_of_hidden_layer_size2.append(hidden_layer_size2)
         list_of_lambda_reg.append(lambda_reg)
         list_of_predicted.append(accuracy_cv)
+        list_of_logloss.append(llogloss)
         print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
+        print("Mylogloss is: " + str(llogloss))
 
         lambda_reg = lambda_reg*optimisation_jump
         del(p_op)
         del(correct_cv)
         del(accuracy_cv)
+        del(h_op)
+        del(llogloss)
         del(fmin)
         del(answer)
         del(theta1)
@@ -631,14 +648,17 @@ def myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, nu
     hidden_layer_size2 = d2_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
 
-  a = np.argmax(list_of_predicted)
+  if use_logloss == True:
+    a = np.argmin(list_of_logloss)
+  else:
+    a = np.argmax(list_of_predicted)
 
   return(list_of_hidden_layer_size1[a], list_of_hidden_layer_size2[a], list_of_lambda_reg[a])
 #-----------------END FUNCTION 10b-----------------
 
 
 #-----------------BEGIN FUNCTION 10c-----------------
-def myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold):
+def myoptimiser5(use_logloss, optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -650,6 +670,7 @@ def myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, nu
   list_of_hidden_layer_size3 = []
   list_of_lambda_reg = []
   list_of_predicted = []
+  list_of_logloss = []
 
   while hidden_layer_size1 < d1_reg_upper_threshold:
     while hidden_layer_size2 < d2_reg_upper_threshold:
@@ -672,17 +693,23 @@ def myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, nu
           correct_cv = [1 if a == b else 0 for (a, b) in zip(p_op,y_cv)]
           accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
 
+          llogloss = mylogloss(h_op, y_cv, num_labels);
+
           list_of_hidden_layer_size1.append(hidden_layer_size1)
           list_of_hidden_layer_size2.append(hidden_layer_size2)
           list_of_hidden_layer_size3.append(hidden_layer_size3)
           list_of_lambda_reg.append(lambda_reg)
           list_of_predicted.append(accuracy_cv)
+          list_of_logloss.append(llogloss)
           print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
+          print("Mylogloss is: " + str(llogloss))
 
           lambda_reg = lambda_reg*optimisation_jump
           del(p_op)
           del(correct_cv)
           del(accuracy_cv)
+          del(h_op)
+          del(llogloss)
           del(fmin)
           del(answer)
           del(theta1)
@@ -704,7 +731,48 @@ def myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, nu
     hidden_layer_size3 = d3_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
 
-  a = np.argmax(list_of_predicted)
+  if use_logloss == True:
+    b = np.argmin(list_of_logloss)
+  else:
+    a = np.argmax(list_of_predicted)
 
   return(list_of_hidden_layer_size1[a], list_of_hidden_layer_size2[a], list_of_hidden_layer_size3[a], list_of_lambda_reg[a])
 #-----------------END FUNCTION 10c-----------------
+
+
+#-----------------BEGIN FUNCTION 11-----------------
+def mylogloss(lh, ly, lnum_labels):
+  mylogloss = 0
+  lm = len(ly)
+
+  y_matrix = []
+  eye_matrix = np.eye(lnum_labels)
+  for i in range(len(ly)):
+    y_matrix.append(eye_matrix[int(ly[i]),:]) #The minus one as python is zero based
+  y_matrix = np.array(y_matrix)
+
+  if 0 in (lh):
+    h[h==0] = 1e-15
+  if 1 in (lh):
+    h[h==1] = 1 - 1e-15
+
+  mylogloss = -(1/float(lm))*np.sum(y_matrix * np.log(lh),axis=None)
+
+  '''
+  for i in range(0,lm):
+    for j in range(0,lnum_labels):
+      if lh[i,j] < 1e-15:
+        lh[i,j] = 1e-15
+      elif lh[i,j] > 1-1e-15:
+        lh[i,j] = 1-1e-15
+      mylogloss = mylogloss + ly[i] * np.log(lh[i,j])
+      print(str(ly[i]ly[i] * np.log(lh[i,j]))
+      #print(mylogloss)
+
+  #print(mylogloss)
+  #exit()
+  mylogloss = -(1/float(lm)) * mylogloss
+  '''
+
+  return mylogloss
+#-----------------END FUNCTION 11-----------------

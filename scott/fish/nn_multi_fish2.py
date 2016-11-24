@@ -27,15 +27,15 @@ print("Started running")
 #############################################################################################################
 ##Basic flags
 #input_layer_size  = 784             # 28x28 Input Images of Digits
-hidden_layer_size1 = 1600             # hidden units, unless allow_optimisation = True
+hidden_layer_size1 = 1800             # hidden units, unless allow_optimisation = True
 hidden_layer_size2 = 1600            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3
 hidden_layer_size3 = 1600            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3 or 4
 num_labels = 8                     # 10 labels, from 0 to 9
 number_of_layers = 3                # Gives the number of layers in nn. 3, 4, 5 are available.
-lambda_reg = 1.0                    # Regularisation parameter, allow_optimisation = True
+lambda_reg = 4.0                    # Regularisation parameter, allow_optimisation = True
 ratio_training_to_cv = 0.7          # Sets the ratio of training to cv data
 use_all_training_data = False       # If True, will use all training data instead of spliting into train and CV
-colour = False                      # Select if we use RGB or greyscale
+colour = False #True                      # Select if we use RGB or greyscale
 
 ##Initialisation
 use_random_initialisation = True    # If true, it will use random initialisation, if false, will use preset random values (FOR DEBUGGING ONLY) -- ONLY WORKS IF ALLOW_OPTIMISER = FALSE AND HIDDEN LAYER = 25 AND LAYERS = 3
@@ -45,26 +45,27 @@ use_gradient_checking = False        # If true, will turn on gradient checking (
 only_gradient_checking = False      # If true, will exit after gradient checking
 
 ##Minimiser options
-iteration_number = 100               # Number of iterations
+iteration_number = 200               # Number of iterations
 minimisation_method = "L-BFGS-B"    # Sets minimiser method, recommended L-BFGS-B or TNC
 use_minimisation_display = True     # Sets whether we display iterations
 
 ##Optimisation options
-allow_optimisation = True          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
-only_optimisation = True           # If True, will exit after optimisation, only works if allow_optimisation = True
-optimisation_iteration = 100         # Sets how many iterations when doing optimisation
-optimisation_jump = 4.0             # Sets how multiplier
-lambda_reg_lower_threshold = 1.0    #1.0   #5.0    # Sets the min lambda threshold for optimisation
-lambda_reg_upper_threshold = 300.0  #300.0   #350.0  # Sets the max lambda threshold for optimisation
-d1_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
-d1_reg_upper_threshold = 2700       # Sets the max d1 threshold for optimisation
-d2_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
-d2_reg_upper_threshold = 2700       # Sets the max d1 threshold for optimisation
-d3_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
-d3_reg_upper_threshold = 2700       # Sets the max d1 threshold for optimisation
+allow_optimisation = False          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
+only_optimisation = False           # If True, will exit after optimisation, only works if allow_optimisation = True
+use_logloss = True                 # If True, will use logloss instead of accuracy to optimise
+optimisation_iteration = 150         # Sets how many iterations when doing optimisation
+optimisation_jump = 2.0             # Sets how multiplier
+lambda_reg_lower_threshold = 0.5    #1.0   #5.0    # Sets the min lambda threshold for optimisation
+lambda_reg_upper_threshold = 10.0  #300.0   #350.0  # Sets the max lambda threshold for optimisation
+d1_reg_lower_threshold = 225         # Sets the min d1 threshold for optimisation
+d1_reg_upper_threshold = 3800       # Sets the max d1 threshold for optimisation
+d2_reg_lower_threshold = 225         # Sets the min d1 threshold for optimisation
+d2_reg_upper_threshold = 3800       # Sets the max d1 threshold for optimisation
+d3_reg_lower_threshold = 225         # Sets the min d1 threshold for optimisation
+d3_reg_upper_threshold = 3800       # Sets the max d1 threshold for optimisation
 
 ##Output CSV file options
-output_test_submission = False      # If True, will print out test data for submission
+output_test_submission = True      # If True, will print out test data for submission
 
 ##Reading in data
 #############################################################################################################
@@ -98,17 +99,17 @@ if allow_optimisation == True:
     if number_of_layers == 3:
       del(hidden_layer_size1)
       del(lambda_reg)
-      hidden_layer_size1, lambda_reg = mf.myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold);
+      hidden_layer_size1, lambda_reg = mf.myoptimiser3(use_logloss, optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold);
     elif number_of_layers == 4:
       del(hidden_layer_size1)
       del(hidden_layer_size2)
       del(lambda_reg)
-      hidden_layer_size1, hidden_layer_size2, lambda_reg = mf.myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold);
+      hidden_layer_size1, hidden_layer_size2, lambda_reg = mf.myoptimiser4(use_logloss, optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold);
     elif number_of_layers == 5:
       del(hidden_layer_size1)
       del(hidden_layer_size2)
       del(lambda_reg)
-      hidden_layer_size1, hidden_layer_size2, hidden_layer_size2, lambda_reg = mf.myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold);
+      hidden_layer_size1, hidden_layer_size2, hidden_layer_size2, lambda_reg = mf.myoptimiser5(use_logloss, optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold);
     else:
       print("Number of layers must be 3, 4 or 5!!! :(")
 
@@ -212,11 +213,16 @@ else:
     correct = [1 if a == b else 0 for (a, b) in zip(p,y_train)]
     accuracy = (sum(map(int, correct)) / float(len(correct)))
     print 'training set accuracy = {0}%'.format(accuracy * 100)
+    mylogloss = mf.mylogloss(h, y_train, num_labels);
+    print("mylogloss_train is: " + str(mylogloss))
 
     p_cv, h_cv = mf.predict3(theta1, theta2, x_cv);
     correct_cv = [1 if a == b else 0 for (a, b) in zip(p_cv,y_cv)]
     accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
     print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
+    mylogloss_cv = mf.mylogloss(h_cv, y_cv, num_labels);
+    print("mylogloss_CV is: " + str(mylogloss_cv))
+
   elif number_of_layers == 4:
     p, h = mf.predict4(theta1, theta2, theta3, x_train);
     print(p[0:10])
@@ -224,11 +230,16 @@ else:
     correct = [1 if a == b else 0 for (a, b) in zip(p,y_train)]
     accuracy = (sum(map(int, correct)) / float(len(correct)))
     print 'training set accuracy = {0}%'.format(accuracy * 100)
+    mylogloss = mf.mylogloss(h, y_train, num_labels);
+    print("mylogloss_train is: " + str(mylogloss))
 
     p_cv, h_cv = mf.predict4(theta1, theta2, theta3, x_cv);
     correct_cv = [1 if a == b else 0 for (a, b) in zip(p_cv,y_cv)]
     accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
     print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
+    mylogloss_cv = mf.mylogloss(h_cv, y_cv, num_labels);
+    print("mylogloss_CV is: " + str(mylogloss_cv))
+
   elif number_of_layers == 5:
     p, h = mf.predict5(theta1, theta2, theta3, theta4, x_train);
     print(p[0:10])
@@ -236,11 +247,15 @@ else:
     correct = [1 if a == b else 0 for (a, b) in zip(p,y_train)]
     accuracy = (sum(map(int, correct)) / float(len(correct)))
     print 'training set accuracy = {0}%'.format(accuracy * 100)
+    mylogloss = mf.mylogloss(h, y_train, num_labels);
+    print("mylogloss_train is: " + str(mylogloss))
 
     p_cv, h_cv = mf.predict5(theta1, theta2, theta3, theta4, x_cv);
     correct_cv = [1 if a == b else 0 for (a, b) in zip(p_cv,y_cv)]
     accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
     print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
+    mylogloss_cv = mf.mylogloss(h_cv, y_cv, num_labels);
+    print("mylogloss_cv is: " + str(mylogloss_cv))
 
 #Processing test data
 #############################################################################################################
