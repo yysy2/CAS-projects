@@ -537,6 +537,7 @@ def myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, nu
       list_of_hidden_layer_size1.append(hidden_layer_size1)
       list_of_lambda_reg.append(lambda_reg)
       list_of_predicted.append(accuracy_cv)
+      print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
 
       lambda_reg = lambda_reg*optimisation_jump
       del(p_op)
@@ -592,6 +593,7 @@ def myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, nu
         list_of_hidden_layer_size2.append(hidden_layer_size2)
         list_of_lambda_reg.append(lambda_reg)
         list_of_predicted.append(accuracy_cv)
+        print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
 
         lambda_reg = lambda_reg*optimisation_jump
         del(p_op)
@@ -658,6 +660,7 @@ def myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, nu
           list_of_hidden_layer_size3.append(hidden_layer_size3)
           list_of_lambda_reg.append(lambda_reg)
           list_of_predicted.append(accuracy_cv)
+          print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
 
           lambda_reg = lambda_reg*optimisation_jump
           del(p_op)

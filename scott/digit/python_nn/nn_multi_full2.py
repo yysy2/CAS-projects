@@ -49,20 +49,20 @@ use_minimisation_display = True     # Sets whether we display iterations
 
 ##Optimisation options
 allow_optimisation = True          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
-only_optimisation = False           # If True, will exit after optimisation, only works if allow_optimisation = True
-optimisation_iteration = 5         # Sets how many iterations when doing optimisation
-optimisation_jump = 3.0             # Sets how multiplier
-lambda_reg_lower_threshold = 1.0    # Sets the min lambda threshold for optimisation
-lambda_reg_upper_threshold = 400.0  # Sets the max lambda threshold for optimisation
-d1_reg_lower_threshold = 75         # Sets the min d1 threshold for optimisation
-d1_reg_upper_threshold = 2500       # Sets the max d1 threshold for optimisation
-d2_reg_lower_threshold = 75         # Sets the min d1 threshold for optimisation
-d2_reg_upper_threshold = 2500       # Sets the max d1 threshold for optimisation
-d3_reg_lower_threshold = 75         # Sets the min d1 threshold for optimisation
-d3_reg_upper_threshold = 2500       # Sets the max d1 threshold for optimisation
+only_optimisation = True           # If True, will exit after optimisation, only works if allow_optimisation = True
+optimisation_iteration = 150         # Sets how many iterations when doing optimisation
+optimisation_jump = 2.0             # Sets how multiplier
+lambda_reg_lower_threshold = 5.0    # Sets the min lambda threshold for optimisation
+lambda_reg_upper_threshold = 200.0  # Sets the max lambda threshold for optimisation
+d1_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
+d1_reg_upper_threshold = 3500       # Sets the max d1 threshold for optimisation
+d2_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
+d2_reg_upper_threshold = 3500       # Sets the max d1 threshold for optimisation
+d3_reg_lower_threshold = 100         # Sets the min d1 threshold for optimisation
+d3_reg_upper_threshold = 3500       # Sets the max d1 threshold for optimisation
 
 ##Output CSV file options
-output_test_submission = True      # If True, will print out test data for submission
+output_test_submission = False      # If True, will print out test data for submission
 
 
 ##Reading in data
