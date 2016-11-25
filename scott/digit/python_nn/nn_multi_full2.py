@@ -39,7 +39,7 @@ use_all_training_data = False       # If True, will use all training data instea
 use_random_initialisation = True    # If true, it will use random initialisation, if false, will use preset random values (FOR DEBUGGING ONLY) -- ONLY WORKS IF ALLOW_OPTIMISER = FALSE AND HIDDEN LAYER = 25 AND LAYERS = 3
 
 ##Gradient checking
-use_gradient_checking = True        # If true, will turn on gradient checking (FOR DEBUGGING/FIRST RUN ONLY)
+use_gradient_checking = False        # If true, will turn on gradient checking (FOR DEBUGGING/FIRST RUN ONLY)
 only_gradient_checking = False      # If true, will exit after gradient checking
 
 ##Minimiser options
@@ -48,8 +48,8 @@ minimisation_method = "L-BFGS-B"    # Sets minimiser method, recommended L-BFGS-
 use_minimisation_display = True     # Sets whether we display iterations
 
 ##Optimisation options
-allow_optimisation = True          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
-only_optimisation = True           # If True, will exit after optimisation, only works if allow_optimisation = True
+allow_optimisation = False          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
+only_optimisation = False           # If True, will exit after optimisation, only works if allow_optimisation = True
 optimisation_iteration = 150         # Sets how many iterations when doing optimisation
 optimisation_jump = 2.0             # Sets how multiplier
 lambda_reg_lower_threshold = 5.0    # Sets the min lambda threshold for optimisation

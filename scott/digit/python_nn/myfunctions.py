@@ -101,6 +101,14 @@ def nncostfunction3(ltheta_ravel, linput_layer_size, lhidden_layer_size, lnum_la
   a2 = (np.concatenate((np.ones((np.shape(z2)[1], 1)), z2.T), axis=1)).astype(float)
   a3 = sigmoid(ltheta2.dot(a2.T))
   h = a3
+  #print(np.shape(h))
+  #print(h[:,0])
+  '''
+  exit()
+  for i in range(np.shape(h)[1]):
+    print(np.sum(h[:,i]))
+  exit()
+  '''
   J_unreg = 0
   J = 0
   if 0 in (h):
@@ -303,6 +311,13 @@ def predict3(ltheta1, ltheta2, x):
 
   h1 = sigmoid((np.hstack((np.ones((m,1)),x.astype(float)))).dot(ltheta1.T))
   h2 = sigmoid((np.hstack((np.ones((m,1)),h1))).dot(ltheta2.T))
+
+  '''
+  for i in range(0,len(h2)):
+    print(sum(h2[i,:]))
+  exit()
+  '''
+  #exit()
 
   for i in range(0,np.shape(h2)[0]):
     p[i] = np.argmax(h2[i,:])
