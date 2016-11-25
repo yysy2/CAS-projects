@@ -752,9 +752,9 @@ def mylogloss(lh, ly, lnum_labels):
   y_matrix = np.array(y_matrix)
 
   if 0 in (lh):
-    h[h==0] = 1e-15
+    lh[lh==0] = 1e-15
   if 1 in (lh):
-    h[h==1] = 1 - 1e-15
+    lh[lh==1] = 1 - 1e-15
 
   mylogloss = -(1/float(lm))*np.sum(y_matrix * np.log(lh),axis=None)
 

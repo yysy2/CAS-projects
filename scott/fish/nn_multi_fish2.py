@@ -27,7 +27,7 @@ print("Started running")
 #############################################################################################################
 ##Basic flags
 #input_layer_size  = 784             # 28x28 Input Images of Digits
-hidden_layer_size1 = 1800             # hidden units, unless allow_optimisation = True
+hidden_layer_size1 = 225             # hidden units, unless allow_optimisation = True
 hidden_layer_size2 = 1600            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3
 hidden_layer_size3 = 1600            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3 or 4
 num_labels = 8                     # 10 labels, from 0 to 9
@@ -45,7 +45,7 @@ use_gradient_checking = False        # If true, will turn on gradient checking (
 only_gradient_checking = False      # If true, will exit after gradient checking
 
 ##Minimiser options
-iteration_number = 200               # Number of iterations
+iteration_number = 10000               # Number of iterations
 minimisation_method = "L-BFGS-B"    # Sets minimiser method, recommended L-BFGS-B or TNC
 use_minimisation_display = True     # Sets whether we display iterations
 
@@ -264,6 +264,11 @@ if output_test_submission == True:
   if number_of_layers == 3:
     x_test, m_test, n_test = mf.readintestcsv(colour);
     p_test, h_test = mf.predict3(theta1, theta2, x_test);
+    #'''
+    for i in range(len(h_test)):
+     print(sum(h_test[i,:]))
+    exit()
+    #'''
     np.set_printoptions(suppress=True)
     np.savetxt("mytest_3layers.csv", h_test, delimiter=",", fmt='%.17f')
     print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", lambda: " + str(lambda_reg) + ", colour: " + str(colour))
