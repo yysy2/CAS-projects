@@ -101,8 +101,22 @@ def nncostfunction3(ltheta_ravel, linput_layer_size, lhidden_layer_size, lnum_la
   a2 = (np.concatenate((np.ones((np.shape(z2)[1], 1)), z2.T), axis=1)).astype(float)
   a3 = sigmoid(ltheta2.dot(a2.T))
   h = a3
+  #print(np.shape(h))
+  #print(h[:,0])
+  '''
+  exit()
+  for i in range(np.shape(h)[1]):
+    print(np.sum(h[:,i]))
+  exit()
+  '''
   J_unreg = 0
   J = 0
+  if 0 in (h):
+    #print("Yes 0")
+    h[h==0] = 1e-15
+  if 1 in (h):
+    #print("Yes 1")
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -160,6 +174,12 @@ def nncostfunction4(ltheta_ravel, linput_layer_size, lhidden_layer_size1, lhidde
   h = a4
   J_unreg = 0
   J = 0
+  if 0 in (h):
+    #print("Yes 0")
+    h[h==0] = 1e-15
+  if 1 in (h):
+    #print("Yes 1")
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -230,6 +250,12 @@ def nncostfunction5(ltheta_ravel, linput_layer_size, lhidden_layer_size1, lhidde
   h = a5
   J_unreg = 0
   J = 0
+  if 0 in (h):
+    #print("Yes 0")
+    h[h==0] = 1e-15
+  if 1 in (h):
+    #print("Yes 1")
+    h[h==1] = 1 - 1e-15
   J_unreg = (1.0/float(lm))*np.sum(\
   -np.multiply(y_matrix,np.log(h.T))\
   -np.multiply((1-y_matrix),np.log(1-h.T))\
@@ -285,6 +311,13 @@ def predict3(ltheta1, ltheta2, x):
 
   h1 = sigmoid((np.hstack((np.ones((m,1)),x.astype(float)))).dot(ltheta1.T))
   h2 = sigmoid((np.hstack((np.ones((m,1)),h1))).dot(ltheta2.T))
+
+  '''
+  for i in range(0,len(h2)):
+    print(sum(h2[i,:]))
+  exit()
+  '''
+  #exit()
 
   for i in range(0,np.shape(h2)[0]):
     p[i] = np.argmax(h2[i,:])
@@ -492,7 +525,7 @@ def readintestcsv():
 
 
 #-----------------BEGIN FUNCTION 10-----------------
-def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold):
+def myoptimiser3(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -519,8 +552,9 @@ def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, 
       list_of_hidden_layer_size1.append(hidden_layer_size1)
       list_of_lambda_reg.append(lambda_reg)
       list_of_predicted.append(accuracy_cv)
+      print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
 
-      lambda_reg = lambda_reg*3.0
+      lambda_reg = lambda_reg*optimisation_jump
       del(p_op)
       del(correct_cv)
       del(accuracy_cv)
@@ -531,7 +565,7 @@ def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, 
       del(theta1_initial)
       del(theta2_initial)
       del(theta_initial_ravel)
-    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size1 = int(hidden_layer_size1*optimisation_jump)
     lambda_reg = lambda_reg_lower_threshold
 
   a = np.argmax(list_of_predicted)
@@ -541,7 +575,7 @@ def myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, 
 
 
 #-----------------BEGIN FUNCTION 10b-----------------
-def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold):
+def myoptimiser4(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -574,8 +608,9 @@ def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, 
         list_of_hidden_layer_size2.append(hidden_layer_size2)
         list_of_lambda_reg.append(lambda_reg)
         list_of_predicted.append(accuracy_cv)
+        print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
 
-        lambda_reg = lambda_reg*3.0
+        lambda_reg = lambda_reg*optimisation_jump
         del(p_op)
         del(correct_cv)
         del(accuracy_cv)
@@ -588,9 +623,9 @@ def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, 
         del(theta2_initial)
         del(theta3_initial)
         del(theta_initial_ravel)
-      hidden_layer_size2 = int(hidden_layer_size2*3.0)
+      hidden_layer_size2 = int(hidden_layer_size2*optimisation_jump)
       lambda_reg = lambda_reg_lower_threshold
-    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size1 = int(hidden_layer_size1*optimisation_jump)
     hidden_layer_size2 = d2_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
 
@@ -601,7 +636,7 @@ def myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, 
 
 
 #-----------------BEGIN FUNCTION 10c-----------------
-def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold):
+def myoptimiser5(optimisation_jump, optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold):
 
   #Setting initial to lower thresholds
   hidden_layer_size1 = d1_reg_lower_threshold
@@ -640,8 +675,9 @@ def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, 
           list_of_hidden_layer_size3.append(hidden_layer_size3)
           list_of_lambda_reg.append(lambda_reg)
           list_of_predicted.append(accuracy_cv)
+          print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
 
-          lambda_reg = lambda_reg*3.0
+          lambda_reg = lambda_reg*optimisation_jump
           del(p_op)
           del(correct_cv)
           del(accuracy_cv)
@@ -656,12 +692,12 @@ def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, 
           del(theta3_initial)
           del(theta4_initial)
           del(theta_initial_ravel)
-        hidden_layer_size3 = int(hidden_layer_size3*3.0)
+        hidden_layer_size3 = int(hidden_layer_size3*optimisation_jump)
         lambda_reg = lambda_reg_lower_threshold
-      hidden_layer_size2 = int(hidden_layer_size2*3.0)
+      hidden_layer_size2 = int(hidden_layer_size2*optimisation_jump)
       hidden_layer_size3 = d3_reg_lower_threshold
       lambda_reg = lambda_reg_lower_threshold
-    hidden_layer_size1 = int(hidden_layer_size1*3.0)
+    hidden_layer_size1 = int(hidden_layer_size1*optimisation_jump)
     hidden_layer_size2 = d2_reg_lower_threshold
     hidden_layer_size3 = d3_reg_lower_threshold
     lambda_reg = lambda_reg_lower_threshold
@@ -670,239 +706,3 @@ def myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, 
 
   return(list_of_hidden_layer_size1[a], list_of_hidden_layer_size2[a], list_of_hidden_layer_size3[a], list_of_lambda_reg[a])
 #-----------------END FUNCTION 10c-----------------
-
-
-#-----------------BEGIN BODY-----------------
-print("Started running")
-
-## Setup the parameters you will use for this exercise -- YOU WILL NEED TO SET THESE FLAGS BEFORE STARTING!!!
-#############################################################################################################
-##Basic flags
-input_layer_size  = 784             # 28x28 Input Images of Digits
-hidden_layer_size1 = 25             # hidden units, unless allow_optimisation = True
-hidden_layer_size2 = 25            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3
-hidden_layer_size3 = 25            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3 or 4
-num_labels = 10                     # 10 labels, from 0 to 9
-number_of_layers = 4                # Gives the number of layers in nn. 3, 4, 5 are available.
-lambda_reg = 1.0                    # Regularisation parameter, allow_optimisation = True
-ratio_training_to_cv = 0.7          # Sets the ratio of training to cv data
-use_all_training_data = False       # If True, will use all training data instead of spliting into train and CV
-
-##Initialisation
-use_random_initialisation = True    # If true, it will use random initialisation, if false, will use preset random values (FOR DEBUGGING ONLY) -- ONLY WORKS IF ALLOW_OPTIMISER = FALSE AND HIDDEN LAYER = 25 AND LAYERS = 3
-
-##Gradient checking
-use_gradient_checking = True        # If true, will turn on gradient checking (FOR DEBUGGING/FIRST RUN ONLY)
-only_gradient_checking = False      # If true, will exit after gradient checking
-
-##Minimiser options
-iteration_number = 10               # Number of iterations
-minimisation_method = "L-BFGS-B"    # Sets minimiser method, recommended L-BFGS-B or TNC
-use_minimisation_display = True     # Sets whether we display iterations
-
-##Optimisation options
-allow_optimisation = True          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
-only_optimisation = True           # If True, will exit after optimisation, only works if allow_optimisation = True
-optimisation_iteration = 2         # Sets how many iterations when doing optimisation
-lambda_reg_lower_threshold = 0.5    # Sets the min lambda threshold for optimisation
-lambda_reg_upper_threshold = 5.0  # Sets the max lambda threshold for optimisation
-d1_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
-d1_reg_upper_threshold = 80       # Sets the max d1 threshold for optimisation
-d2_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
-d2_reg_upper_threshold = 80       # Sets the max d1 threshold for optimisation
-d3_reg_lower_threshold = 25         # Sets the min d1 threshold for optimisation
-d3_reg_upper_threshold = 80       # Sets the max d1 threshold for optimisation
-
-##Output CSV file options
-output_test_submission = False      # If True, will print out test data for submission
-
-
-##Reading in data
-#############################################################################################################
-m, n, x, y, m_train, m_cv, x_train, x_cv, y_train, y_cv = readincsv(ratio_training_to_cv);
-
-#Gradient checking
-#############################################################################################################
-if use_gradient_checking == True:
-  print('Doing gradient checking')
-  if number_of_layers == 3:
-    smallNN3(lambda_reg);
-  elif number_of_layers == 4:
-    smallNN4(lambda_reg);
-  elif number_of_layers == 5:
-    smallNN5(lambda_reg);
-
-if only_gradient_checking == True:
-  exit()
-
-#Optimising d and lambda
-#############################################################################################################
-if allow_optimisation == True:
-  if use_all_training_data == True:
-    print("Must set use_all_training_data = False for this to work")
-    exit()
-  elif use_random_initialisation == False:
-    print("Must set use_random_initialisation = True for this to work")
-  else:
-    print('Doing optimisation')
-    if number_of_layers == 3:
-      del(hidden_layer_size1)
-      del(lambda_reg)
-      hidden_layer_size1, lambda_reg = myoptimiser3(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold);
-    elif number_of_layers == 4:
-      del(hidden_layer_size1)
-      del(hidden_layer_size2)
-      del(lambda_reg)
-      hidden_layer_size1, hidden_layer_size2, lambda_reg = myoptimiser4(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold);
-    elif number_of_layers == 5:
-      del(hidden_layer_size1)
-      del(hidden_layer_size2)
-      del(lambda_reg)
-      hidden_layer_size1, hidden_layer_size2, hidden_layer_size2, lambda_reg = myoptimiser5(optimisation_iteration, input_layer_size, num_labels, x_train, y_train, x_cv, y_cv, minimisation_method, lambda_reg_lower_threshold, lambda_reg_upper_threshold, d1_reg_lower_threshold, d1_reg_upper_threshold, d2_reg_lower_threshold, d2_reg_upper_threshold, d3_reg_lower_threshold, d3_reg_upper_threshold);
-    else:
-      print("Number of layers must be 3, 4 or 5!!! :(")
-
-if number_of_layers == 3:
-  print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", lambda: " + str(lambda_reg))
-elif number_of_layers == 4:
-  print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", " + str(hidden_layer_size2) + ", lambda: " + str(lambda_reg))
-elif number_of_layers == 5:
-  print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", " + str(hidden_layer_size2) + ", " + str(hidden_layer_size3) + ", lambda: " + str(lambda_reg))
-else:
-  print("Number of layers must be 3, 4 or 5")
-  exit()
-
-
-if only_optimisation == True:
-  exit()
-
-#Randomly initalize weights for Theta_initial
-#############################################################################################################
-print('Initialising weights')
-if use_random_initialisation == True:
-  if number_of_layers == 3:
-    theta1_initial = randinitialize(input_layer_size, hidden_layer_size1);
-    theta2_initial = randinitialize(hidden_layer_size1, num_labels);
-    theta_initial_ravel = np.concatenate((np.ravel(theta1_initial), np.ravel(theta2_initial)))
-  elif number_of_layers == 4:
-    theta1_initial = randinitialize(input_layer_size, hidden_layer_size1);
-    theta2_initial = randinitialize(hidden_layer_size1, hidden_layer_size2);
-    theta3_initial = randinitialize(hidden_layer_size2, num_labels);
-    theta_initial_ravel = np.concatenate((np.ravel(theta1_initial), np.ravel(theta2_initial), np.ravel(theta3_initial)))
-  elif number_of_layers == 5:
-    theta1_initial = randinitialize(input_layer_size, hidden_layer_size1);
-    theta2_initial = randinitialize(hidden_layer_size1, hidden_layer_size2);
-    theta3_initial = randinitialize(hidden_layer_size2, hidden_layer_size3);
-    theta4_initial = randinitialize(hidden_layer_size3, num_labels);
-    theta_initial_ravel = np.concatenate((np.ravel(theta1_initial), np.ravel(theta2_initial), np.ravel(theta3_initial), np.ravel(theta4_initial)))
-  else:
-    print("Number of layers must be 3, 4 or 5")
-    exit()
-else:
-  theta1_initial = np.genfromtxt('tt1.csv', delimiter=',')
-  theta2_initial = np.genfromtxt('tt2.csv', delimiter=',')
-  theta_initial_ravel = np.concatenate((np.ravel(theta1_initial), np.ravel(theta2_initial)))
-
-#Minimize nncostfunction
-#############################################################################################################
-print('Doing minimisation')
-if use_all_training_data == True and number_of_layers == 3:
-  fmin = scipy.optimize.minimize(fun=nncostfunction3, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size1, num_labels, x, y, lambda_reg), method=minimisation_method, jac=True, options={'maxiter': iteration_number, 'disp': use_minimisation_display})
-  answer = fmin.x
-  theta1 = np.array(np.reshape(answer[0:hidden_layer_size1*(input_layer_size+1)], ((hidden_layer_size1, input_layer_size + 1))))
-  theta2 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1):], ((num_labels, hidden_layer_size1 + 1))))
-elif use_all_training_data == True and number_of_layers == 4:
-  fmin = scipy.optimize.minimize(fun=nncostfunction4, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size1, hidden_layer_size2, num_labels, x, y, lambda_reg), method=minimisation_method, jac=True, options={'maxiter': iteration_number, 'disp': use_minimisation_display})
-  answer = fmin.x
-  theta1 = np.array(np.reshape(answer[0:hidden_layer_size1*(input_layer_size+1)], ((hidden_layer_size1, input_layer_size + 1))))
-  theta2 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1):hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)], ((hidden_layer_size2, hidden_layer_size1 + 1))))
-  theta3 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1):], ((num_labels, hidden_layer_size2 + 1))))
-elif use_all_training_data == True and number_of_layers == 5:
-  fmin = scipy.optimize.minimize(fun=nncostfunction5, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size1, hidden_layer_size2, hidden_layer_size3, num_labels, x, y, lambda_reg), method=minimisation_method, jac=True, options={'maxiter': iteration_number, 'disp': use_minimisation_display})
-  answer = fmin.x
-  theta1 = np.array(np.reshape(answer[0:hidden_layer_size1*(input_layer_size+1)], ((hidden_layer_size1, input_layer_size + 1))))
-  theta2 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1):hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)], ((hidden_layer_size2, hidden_layer_size1 + 1))))
-  theta3 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1):hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)+hidden_layer_size3*(hidden_layer_size2+1)], ((hidden_layer_size3, hidden_layer_size2 + 1))))
-  theta4 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)+hidden_layer_size3*(hidden_layer_size2+1):], ((num_labels, hidden_layer_size3 + 1))))
-elif use_all_training_data == False and number_of_layers == 3:
-  fmin = scipy.optimize.minimize(fun=nncostfunction3, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size1, num_labels, x_train, y_train, lambda_reg), method=minimisation_method, jac=True, options={'maxiter': iteration_number, 'disp': use_minimisation_display})
-  answer = fmin.x
-  theta1 = np.array(np.reshape(answer[0:hidden_layer_size1*(input_layer_size+1)], ((hidden_layer_size1, input_layer_size + 1))))
-  theta2 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1):], ((num_labels, hidden_layer_size1 + 1))))
-elif use_all_training_data == False and number_of_layers == 4:
-  fmin = scipy.optimize.minimize(fun=nncostfunction4, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size1, hidden_layer_size2, num_labels, x_train, y_train, lambda_reg), method=minimisation_method, jac=True, options={'maxiter': iteration_number, 'disp': use_minimisation_display})
-  answer = fmin.x
-  theta1 = np.array(np.reshape(answer[0:hidden_layer_size1*(input_layer_size+1)], ((hidden_layer_size1, input_layer_size + 1))))
-  theta2 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1):hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)], ((hidden_layer_size2, hidden_layer_size1 + 1))))
-  theta3 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1):], ((num_labels, hidden_layer_size2 + 1))))
-elif use_all_training_data == False and number_of_layers == 5:
-  fmin = scipy.optimize.minimize(fun=nncostfunction5, x0=theta_initial_ravel, args=(input_layer_size, hidden_layer_size1, hidden_layer_size2, hidden_layer_size3, num_labels, x_train, y_train, lambda_reg), method=minimisation_method, jac=True, options={'maxiter': iteration_number, 'disp': use_minimisation_display})
-  answer = fmin.x
-  theta1 = np.array(np.reshape(answer[0:hidden_layer_size1*(input_layer_size+1)], ((hidden_layer_size1, input_layer_size + 1))))
-  theta2 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1):hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)], ((hidden_layer_size2, hidden_layer_size1 + 1))))
-  theta3 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1):hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)+hidden_layer_size3*(hidden_layer_size2+1)], ((hidden_layer_size3, hidden_layer_size2 + 1))))
-  theta4 = np.array(np.reshape(answer[hidden_layer_size1*(input_layer_size+1)+hidden_layer_size2*(hidden_layer_size1+1)+hidden_layer_size3*(hidden_layer_size2+1):], ((num_labels, hidden_layer_size3 + 1))))
-else:
-  print("Error")
-  exit()
-
-#Doing predictions
-#############################################################################################################
-print('Doing predictions')
-if use_all_training_data == True:
-  p = predict(theta1, theta2, x);
-  correct = [1 if a == b else 0 for (a, b) in zip(p,y)]  
-  accuracy = (sum(map(int, correct)) / float(len(correct)))  
-  print 'training set accuracy = {0}%'.format(accuracy * 100)
-else:
-  if number_of_layers == 3:
-    p = predict3(theta1, theta2, x_train);
-    print(p[0:10])
-    print(y_train[0:10])
-    correct = [1 if a == b else 0 for (a, b) in zip(p,y_train)]
-    accuracy = (sum(map(int, correct)) / float(len(correct)))
-    print 'training set accuracy = {0}%'.format(accuracy * 100)
-
-    p_cv = predict3(theta1, theta2, x_cv);
-    correct_cv = [1 if a == b else 0 for (a, b) in zip(p_cv,y_cv)]
-    accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
-    print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
-  elif number_of_layers == 4:
-    p = predict4(theta1, theta2, theta3, x_train);
-    print(p[0:10])
-    print(y_train[0:10])
-    correct = [1 if a == b else 0 for (a, b) in zip(p,y_train)]
-    accuracy = (sum(map(int, correct)) / float(len(correct)))
-    print 'training set accuracy = {0}%'.format(accuracy * 100)
-
-    p_cv = predict4(theta1, theta2, theta3, x_cv);
-    correct_cv = [1 if a == b else 0 for (a, b) in zip(p_cv,y_cv)]
-    accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
-    print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
-  elif number_of_layers == 5:
-    p = predict5(theta1, theta2, theta3, theta4, x_train);
-    print(p[0:10])
-    print(y_train[0:10])
-    correct = [1 if a == b else 0 for (a, b) in zip(p,y_train)]
-    accuracy = (sum(map(int, correct)) / float(len(correct)))
-    print 'training set accuracy = {0}%'.format(accuracy * 100)
-
-    p_cv = predict5(theta1, theta2, theta3, theta4, x_cv);
-    correct_cv = [1 if a == b else 0 for (a, b) in zip(p_cv,y_cv)]
-    accuracy_cv = (sum(map(int, correct_cv)) / float(len(correct_cv)))
-    print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
-
-#Processing test data
-#############################################################################################################
-if output_test_submission == True:
-  print("Processing test data")
-
-  x_test, m_test, n_test = readintestcsv();
-  p_test = predict(theta1, theta2, x_test);
-  imageid = []
-  for i in range(len(p_test)):
-    imageid.append(i+1)
-  mysubmission = np.vstack((imageid,p_test))
-  np.set_printoptions(suppress=True)
-  np.savetxt("mytest.csv", mysubmission.T, delimiter=",", fmt='%.0f')
-#-----------------END BODY-----------------
