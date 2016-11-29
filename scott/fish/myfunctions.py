@@ -37,6 +37,7 @@ def readincsv(ratio_training_to_cv, colour):
       for row in data_csv:
         data.append(row)
   else:
+    #with open('rot10rem10train_l_100_60.csv', 'rb') as csvfile:
     with open('train_l_20_12.csv', 'rb') as csvfile:
       #has_header = csv.Sniffer().has_header(csvfile.read(1024))
       #csvfile.seek(0)  # rewind
@@ -51,8 +52,9 @@ def readincsv(ratio_training_to_cv, colour):
   np.random.seed(seed=None)
 
   #Set basic parameters
-  x = data[:,1:]
-  y = data[:,0]
+  fp = data[:,0]
+  x = data[:,2:]
+  y = data[:,1]
   x = x.astype(float)
   y = y.astype(int)
   m, n = np.shape(x)
@@ -60,6 +62,8 @@ def readincsv(ratio_training_to_cv, colour):
   #Set training and CV basic parameters
   m_train = int(m*ratio_training_to_cv)
   m_cv = m - m_train
+  fp_train = fp[:m_train]
+  fp_cv = fp[m_train:]
   x_train = x[:m_train,:]
   x_cv = x[m_train:,:]
   y_train = y[:m_train]
@@ -67,7 +71,7 @@ def readincsv(ratio_training_to_cv, colour):
 
   del(data)
 
-  return (m, n, x, y, m_train, m_cv, x_train, x_cv, y_train, y_cv)
+  return (m, n, x, y, m_train, m_cv, x_train, x_cv, y_train, y_cv, fp, fp_train, fp_cv)
 #-----------------END FUNCTION 0-----------------
 
 
@@ -506,23 +510,25 @@ def smallNN5(llambda_reg):
 #-----------------BEGIN FUNCTION 9-----------------
 def readintestcsv(colour):
 
-  x_test = []
+  data_test = []
   if colour == True:
     with open('test_c_20_12.csv', 'rb') as csvfile2:
       data_csv2 = csv.reader(csvfile2, delimiter=',')
       for row in data_csv2:
-        x_test.append(row)
+        data_test.append(row)
   else:
     with open('test_l_20_12.csv', 'rb') as csvfile2:
       data_csv2 = csv.reader(csvfile2, delimiter=',')
       for row in data_csv2:
-        x_test.append(row)
-  x_test = np.array(x_test)
+        data_test.append(row)
+  data_test = np.array(data_test)
+  fp_test = data_test[:,0]
+  x_test = data_test[:,1:]
 
   x_test = x_test.astype(float)
   m_test, n_test = np.shape(x_test)
 
-  return(x_test, m_test, n_test)
+  return(x_test, m_test, n_test, fp_test)
 #-----------------END FUNCTION 9-----------------
 
 
@@ -755,6 +761,12 @@ def mylogloss(lh, ly, lnum_labels):
     lh[lh==0] = 1e-15
   if 1 in (lh):
     lh[lh==1] = 1 - 1e-15
+
+  mynorm = 0
+  for i in range(len(lh)):
+    mynorm = np.sum(lh[i,:])
+    lh[i,:] = lh[i,:]/float(mynorm)
+    del(mynorm)
 
   mylogloss = -(1/float(lm))*np.sum(y_matrix * np.log(lh),axis=None)
 

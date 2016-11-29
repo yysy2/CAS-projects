@@ -27,12 +27,12 @@ print("Started running")
 #############################################################################################################
 ##Basic flags
 #input_layer_size  = 784             # 28x28 Input Images of Digits
-hidden_layer_size1 = 225             # hidden units, unless allow_optimisation = True
+hidden_layer_size1 = 900             # hidden units, unless allow_optimisation = True
 hidden_layer_size2 = 1600            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3
 hidden_layer_size3 = 1600            # hidden units, unless allow_optimisation = True, ignored if number_of_layers = 3 or 4
 num_labels = 8                     # 10 labels, from 0 to 9
 number_of_layers = 3                # Gives the number of layers in nn. 3, 4, 5 are available.
-lambda_reg = 4.0                    # Regularisation parameter, allow_optimisation = True
+lambda_reg = 8.0                    # Regularisation parameter, allow_optimisation = True
 ratio_training_to_cv = 0.7          # Sets the ratio of training to cv data
 use_all_training_data = False       # If True, will use all training data instead of spliting into train and CV
 colour = False #True                      # Select if we use RGB or greyscale
@@ -45,7 +45,7 @@ use_gradient_checking = False        # If true, will turn on gradient checking (
 only_gradient_checking = False      # If true, will exit after gradient checking
 
 ##Minimiser options
-iteration_number = 10000               # Number of iterations
+iteration_number = 300               # Number of iterations
 minimisation_method = "L-BFGS-B"    # Sets minimiser method, recommended L-BFGS-B or TNC
 use_minimisation_display = True     # Sets whether we display iterations
 
@@ -53,10 +53,10 @@ use_minimisation_display = True     # Sets whether we display iterations
 allow_optimisation = False          # If True, will try to find best hidden layers and lambda. It will ignore inputted numbers. Only work if use_all_training_data = False and use_random_initialisation = True
 only_optimisation = False           # If True, will exit after optimisation, only works if allow_optimisation = True
 use_logloss = True                 # If True, will use logloss instead of accuracy to optimise
-optimisation_iteration = 150         # Sets how many iterations when doing optimisation
+optimisation_iteration = 50         # Sets how many iterations when doing optimisation
 optimisation_jump = 2.0             # Sets how multiplier
 lambda_reg_lower_threshold = 0.5    #1.0   #5.0    # Sets the min lambda threshold for optimisation
-lambda_reg_upper_threshold = 10.0  #300.0   #350.0  # Sets the max lambda threshold for optimisation
+lambda_reg_upper_threshold = 18.0  #300.0   #350.0  # Sets the max lambda threshold for optimisation
 d1_reg_lower_threshold = 225         # Sets the min d1 threshold for optimisation
 d1_reg_upper_threshold = 3800       # Sets the max d1 threshold for optimisation
 d2_reg_lower_threshold = 225         # Sets the min d1 threshold for optimisation
@@ -69,7 +69,8 @@ output_test_submission = True      # If True, will print out test data for submi
 
 ##Reading in data
 #############################################################################################################
-m, n, x, y, m_train, m_cv, x_train, x_cv, y_train, y_cv = mf.readincsv(ratio_training_to_cv, colour);
+m, n, x, y, m_train, m_cv, x_train, x_cv, y_train, y_cv, fp, fp_train, fp_cv = mf.readincsv(ratio_training_to_cv, colour);
+print(m)
 input_layer_size = n
 
 #Gradient checking
@@ -222,7 +223,17 @@ else:
     print 'CV set accuracy = {0}%'.format(accuracy_cv * 100)
     mylogloss_cv = mf.mylogloss(h_cv, y_cv, num_labels);
     print("mylogloss_CV is: " + str(mylogloss_cv))
-
+   
+    '''
+    print(len(fp_cv))
+    print(len(y_cv))
+    print(len(p_cv))
+    #exit()
+    ourcheck = np.vstack((fp_cv.astype('str'),y_cv.astype('str'),h_cv[:,0].astype('str'),h_cv[:,1].astype('str'),h_cv[:,2].astype('str'),h_cv[:,3].astype('str'),h_cv[:,4].astype('str'),h_cv[:,5].astype('str'),h_cv[:,6].astype('str'),h_cv[:,7].astype('str')))
+    np.set_printoptions(suppress=True)
+    np.savetxt("logcheck.csv", ourcheck.T, delimiter=",", fmt="%s")#fmt='%.17f')
+    exit()
+    '''
   elif number_of_layers == 4:
     p, h = mf.predict4(theta1, theta2, theta3, x_train);
     print(p[0:10])
@@ -262,27 +273,40 @@ else:
 if output_test_submission == True:
   print("Processing test data")
   if number_of_layers == 3:
-    x_test, m_test, n_test = mf.readintestcsv(colour);
+    x_test, m_test, n_test, fp_test = mf.readintestcsv(colour);
     p_test, h_test = mf.predict3(theta1, theta2, x_test);
-    #'''
-    for i in range(len(h_test)):
-     print(sum(h_test[i,:]))
-    exit()
-    #'''
+
+    #Remove the first 6 char (filepath)
+    for i in range(len(fp_test)):
+      fp_test[i] = fp_test[i][6:]
+
+    ourcheck = np.vstack((fp_test.astype('str'),h_test[:,0].astype('str'),h_test[:,1].astype('str'),h_test[:,2].astype('str'),h_test[:,3].astype('str'),h_test[:,4].astype('str'),h_test[:,5].astype('str'),h_test[:,6].astype('str'),h_test[:,7].astype('str')))
     np.set_printoptions(suppress=True)
-    np.savetxt("mytest_3layers.csv", h_test, delimiter=",", fmt='%.17f')
+    np.savetxt("mytest_3layers.csv", ourcheck.T, delimiter=",",fmt="%s")# fmt='%.17f')
     print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", lambda: " + str(lambda_reg) + ", colour: " + str(colour))
   elif number_of_layers == 4:
-    x_test, m_test, n_test = mf.readintestcsv(colour);
+    x_test, m_test, n_test, fp_test = mf.readintestcsv(colour);
     p_test, h_test = mf.predict4(theta1, theta2, theta3, x_test);
+
+    #Remove the first 6 char (filepath)
+    for i in range(len(fp_test)):
+      fp_test[i] = fp_test[i][6:]
+
+    ourcheck = np.vstack((fp_test.astype('str'),h_test[:,0].astype('str'),h_test[:,1].astype('str'),h_test[:,2].astype('str'),h_test[:,3].astype('str'),h_test[:,4].astype('str'),h_test[:,5].astype('str'),h_test[:,6].astype('str'),h_test[:,7].astype('str')))
     np.set_printoptions(suppress=True)
-    np.savetxt("mytest_4layers.csv", h_test, delimiter=",", fmt='%.17f')
+    np.savetxt("mytest_4layers.csv", ourcheck.T, delimiter=",", fmt='%.17f')
     print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", " + str(hidden_layer_size2) + ", lambda: " + str(lambda_reg) + ", colour: " + str(colour))
   elif number_of_layers == 5:
     x_test, m_test, n_test = mf.readintestcsv(colour);
     p_test, h_test = mf.predict5(theta1, theta2, theta3, theta4, x_test);
+
+    #Remove the first 6 char (filepath)
+    for i in range(len(fp_test)):
+      fp_test[i] = fp_test[i][6:]
+
+    ourcheck = np.vstack((fp_test.astype('str'),h_test[:,0].astype('str'),h_test[:,1].astype('str'),h_test[:,2].astype('str'),h_test[:,3].astype('str'),h_test[:,4].astype('str'),h_test[:,5].astype('str'),h_test[:,6].astype('str'),h_test[:,7].astype('str')))
     np.set_printoptions(suppress=True)
-    np.savetxt("l3mytest_5layers.csv", h_test, delimiter=",", fmt='%.8f')
+    np.savetxt("l3mytest_5layers.csv", ourcheck.T, delimiter=",", fmt='%.8f')
     print("Using Hidden_layer_size: " + str(hidden_layer_size1) + ", " + str(hidden_layer_size2) + ", " + str(hidden_layer_size3) + ", lambda: " + str(lambda_reg) + ", colour: " + str(colour))
   else:
     print("Number of layers must be 3, 4 or 5")
