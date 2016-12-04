@@ -1,5 +1,6 @@
 import numpy as np
 import logistics as lg
+#from sklearn.utils.extmath import fast_dot
 
 def nnCostFunction_vectorized(nn_params, input_layer_size, hidden_layer_size, num_labels, X, y, lamb):
    # cost function for a two-layer neural network (input, hidden, output)
